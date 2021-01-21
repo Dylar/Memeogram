@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:memeogram/main.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:memeogram/screens/home.dart';
 
 abstract class AppRoute<T> extends Route<T> {
   String get appName;
@@ -39,8 +40,10 @@ class MemeogramRouter {
   static MemeogramRoute _navigateToHome(RouteSettings settings) {
     return _wrapRoute(
         settings,
-        MyHomePage(
-          title: "HOMOPAGE",
+        Builder(
+          builder: (context) => MyHomePage(
+            title: AppLocalizations.of(context).helloWorld,
+          ),
         ));
   }
 
