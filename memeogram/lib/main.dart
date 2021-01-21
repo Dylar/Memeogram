@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:memeogram/settings/memeogram_localization.dart';
+
+import 'navigation/router.dart';
 
 void main() {
   runApp(MyApp());
@@ -8,6 +12,20 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'Memeogram',
+      // theme: articleAdjustmentThemeData,
+      onGenerateRoute: MemeogramRouter.generateRoute,
+      navigatorObservers: [MemeogramRouter.routeObserver],
+      localizationsDelegates: const [
+        MemeogramLocalizationDelegate(),
+        // AppLocalizations.delegate,
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+      ],
+      supportedLocales: const [Locale('de')],
+    );
     return MaterialApp(
       title: 'Flutter Demo',
       theme: ThemeData(
@@ -33,6 +51,8 @@ class MyApp extends StatelessWidget {
 
 class MyHomePage extends StatefulWidget {
   MyHomePage({Key key, this.title}) : super(key: key);
+
+  static const String routeName = "/";
 
   // This widget is the home page of your application. It is stateful, meaning
   // that it has a State object (defined below) that contains fields that affect
