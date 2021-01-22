@@ -1,18 +1,29 @@
+class DatabaseOpenException implements Exception {}
+
+class DatabaseClosedException implements Exception {}
+
 abstract class Database {
-  Future<bool> init();
-  Future<bool> close();
+  Future<void> init();
+
+  Future<void> close();
 }
 
 class MemeogramDatabase extends Database {
+  bool isOpen = false;
+
   @override
-  Future<bool> close() {
-    // TODO: implement close
-    throw UnimplementedError();
+  Future<void> close() async {
+    if (!isOpen) {
+      throw DatabaseClosedException();
+    }
+    isOpen = false;
   }
 
   @override
-  Future<bool> init() {
-    // TODO: implement init
-    throw UnimplementedError();
+  Future<void> init() async {
+    if (isOpen) {
+      throw DatabaseOpenException();
+    }
+    isOpen = true;
   }
 }

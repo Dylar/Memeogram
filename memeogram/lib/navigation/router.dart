@@ -29,19 +29,21 @@ class MemeogramRouter {
 
   static AppRoute<dynamic> generateRoute(RouteSettings settings) {
     final navArgs = settings.arguments;
+    AppRoute route;
     switch (settings.name) {
-      case MyHomePage.routeName:
-        return _navigateToHome(settings);
-      default:
-        return null;
+      case HomePage.routeName:
+        route = _navigateToHome(settings);
+        break;
     }
+
+    return route;
   }
 
   static MemeogramRoute _navigateToHome(RouteSettings settings) {
     return _wrapRoute(
         settings,
         Builder(
-          builder: (context) => MyHomePage(
+          builder: (context) => HomePage(
             title: AppLocalizations.of(context).helloWorld,
           ),
         ));
