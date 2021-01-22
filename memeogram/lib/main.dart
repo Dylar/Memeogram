@@ -1,52 +1,61 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:memeogram/database/database.dart';
+import 'package:memeogram/services/services.dart';
 
+import 'memeogram_theme.dart';
 import 'navigation/router.dart';
 
 void main() {
-  runApp(App());
+  runApp(App.load());
 }
 
 class App extends StatelessWidget {
+  const App({@required this.database})
+      : assert(database != null),
+        super();
+
+  factory App.load({Database database}) {
+    return App(
+      database: database ?? MemeogramDatabase(),
+    );
+  }
+
+  final Database database;
+
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Memeogram',
-      // theme: articleAdjustmentThemeData,
-      onGenerateRoute: MemeogramRouter.generateRoute,
-      navigatorObservers: [MemeogramRouter.routeObserver],
-      supportedLocales: const [
-        Locale('en'),
-        Locale('de'),
-      ],
-      localizationsDelegates: const [
-        AppLocalizations.delegate,
-        GlobalMaterialLocalizations.delegate,
-        GlobalWidgetsLocalizations.delegate,
-        GlobalCupertinoLocalizations.delegate,
-      ],
+    return BlocProvider<AppBloc>(
+      lazy: false,
+      create: (context) => AppBloc(),
+      child: Services.init(
+        database: database,
+        child: MaterialApp(
+          title: 'Memeogram',
+          theme: memeogramTheme,
+          onGenerateRoute: MemeogramRouter.generateRoute,
+          navigatorObservers: [MemeogramRouter.routeObserver],
+          supportedLocales: const [
+            Locale('en'),
+            Locale('de'),
+          ],
+          localizationsDelegates: const [
+            AppLocalizations.delegate,
+            GlobalMaterialLocalizations.delegate,
+            GlobalWidgetsLocalizations.delegate,
+            GlobalCupertinoLocalizations.delegate,
+          ],
+        ),
+      ),
     );
-    // return MaterialApp(
-    //   title: 'Flutter Demo',
-    //   theme: ThemeData(
-    //     // This is the theme of your application.
-    //     //
-    //     // Try running your application with "flutter run". You'll see the
-    //     // application has a blue toolbar. Then, without quitting the app, try
-    //     // changing the primarySwatch below to Colors.green and then invoke
-    //     // "hot reload" (press "r" in the console where you ran "flutter run",
-    //     // or simply save your changes to "hot reload" in a Flutter IDE).
-    //     // Notice that the counter didn't reset back to zero; the application
-    //     // is not restarted.
-    //     primarySwatch: Colors.blue,
-    //     // This makes the visual density adapt to the platform that you run
-    //     // the app on. For desktop platforms, the controls will be smaller and
-    //     // closer together (more dense) than on mobile platforms.
-    //     visualDensity: VisualDensity.adaptivePlatformDensity,
-    //   ),
-    //   home: MyHomePage(title: 'Flutter Demo Home Page'),
-    // );
   }
 }
+
+class AppBloc extends Cubit<AppState> {
+  AppBloc({AppState state}) : super(state);
+}
+
+class AppState {}
