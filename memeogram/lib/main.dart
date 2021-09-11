@@ -1,16 +1,35 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:memeogram/database/database.dart';
 import 'package:memeogram/datasource/NotesDataSource.dart';
 import 'package:memeogram/services/services.dart';
+import 'package:memeogram/viewmodels/home_vm.dart';
+import 'package:memeogram/viewmodels/notes_vm.dart';
+import 'package:provider/provider.dart';
 
 import 'memeogram_theme.dart';
 import 'navigation/router.dart';
 
 void main() {
   runApp(App.load());
+}
+
+class AppProviders extends StatelessWidget {
+  const AppProviders(this.child);
+
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) {
+    return MultiProvider(
+      providers: [
+        NotesViewModelProvider(),
+        HomeViewModelProvider(),
+      ],
+      child: child,
+    );
+  }
 }
 
 class App extends StatelessWidget {
@@ -37,10 +56,8 @@ class App extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return BlocProvider<AppBloc>(
-      lazy: false,
-      create: (context) => AppBloc(),
-      child: Services.init(
+    return AppProviders(
+      Services.init(
         notesDataSource: notesDataSource,
         child: MaterialApp(
           title: 'Memeogram',
@@ -62,9 +79,3 @@ class App extends StatelessWidget {
     );
   }
 }
-
-class AppBloc extends Cubit<AppState> {
-  AppBloc({AppState state}) : super(state);
-}
-
-class AppState {}
