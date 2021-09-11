@@ -2,13 +2,7 @@ class DatabaseOpenException implements Exception {}
 
 class DatabaseClosedException implements Exception {}
 
-abstract class Database {
-  Future<void> init();
-
-  Future<void> close();
-}
-
-class MemeogramDatabase extends Database {
+class MemeogramDatabase {
   bool isOpen = false;
 
   @override

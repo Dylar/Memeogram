@@ -1,6 +1,11 @@
 {
-  "helloWorld": "Hello World!",
-  "@helloWorld": {
-    "description": "The conventional newborn programmer greeting"
+  "notesPageTitle": "Notes page",
+  "@notesPageTitle": {
+    "description": "Notes page title"
+  },
+
+  "homoPageTitle": "Homo page!",
+  "@homoPageTitle": {
+    "description": "Home page title"
   }
 }

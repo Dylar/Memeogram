@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:memeogram/services/services.dart';
+import 'package:memeogram/ui/screens/notes.dart';
 
 class HomePage extends StatefulWidget {
   HomePage({Key key, this.title}) : super(key: key);
@@ -32,18 +32,19 @@ class _HomePageState extends State<HomePage> {
       // _counter without calling setState(), then the build method would not be
       // called again, and so nothing would appear to happen.
       _counter++;
+      print("INC: $_counter");
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    final service = Services.of(context).database;
+    print("BUILD: $_counter");
     // This method is rerun every time setState is called, for instance as done
     // by the _incrementCounter method above.
     //
     // The Flutter framework has been optimized to make rerunning build methods
     // fast, so that you can just rebuild anything that needs updating rather
-    // than having to individually change instances of widgets.
+    // than having to individually change instances of ui.widgets.
     return Scaffold(
       appBar: AppBar(
         // Here we take the value from the MyHomePage object that was created by
@@ -77,13 +78,17 @@ class _HomePageState extends State<HomePage> {
               '$_counter',
               style: Theme.of(context).textTheme.headline4,
             ),
+            ElevatedButton(
+              onPressed: () => _incrementCounter,
+              child: Text('Increment'),
+            )
           ],
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: Icon(Icons.add),
+        onPressed: () => Navigator.of(context).pushNamed(NotesPage.routeName),
+        tooltip: 'Record memeo',
+        child: Icon(Icons.record_voice_over),
       ), // This trailing comma makes auto-formatting nicer for build methods.
     );
   }

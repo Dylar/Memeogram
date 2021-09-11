@@ -1,17 +1,20 @@
 import 'package:flutter/material.dart';
-import 'package:memeogram/database/database.dart';
+import 'package:memeogram/datasource/NotesDataSource.dart';
 
 class Services extends InheritedWidget {
-  const Services({this.database, Key key, Widget child})
+
+  final NotesDataSource notesDataSource;
+
+  const Services({this.notesDataSource, Key key, Widget child})
       : super(key: key, child: child);
 
   factory Services.init({
-    Database database,
+    NotesDataSource notesDataSource,
     Key key,
     Widget child,
   }) {
     return Services(
-      database: database,
+      notesDataSource: notesDataSource,
       key: key,
       child: child,
     );
@@ -20,8 +23,6 @@ class Services extends InheritedWidget {
   static Services of(BuildContext context) {
     return context.dependOnInheritedWidgetOfExactType<Services>();
   }
-
-  final Database database;
 
   @override
   bool updateShouldNotify(Services oldWidget) {

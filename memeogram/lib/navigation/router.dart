@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:memeogram/screens/home.dart';
+import 'package:memeogram/ui/screens/home.dart';
+import 'package:memeogram/ui/screens/notes.dart';
 
 abstract class AppRoute<T> extends Route<T> {
   String get appName;
@@ -29,30 +30,36 @@ class MemeogramRouter {
 
   static AppRoute<dynamic> generateRoute(RouteSettings settings) {
     final navArgs = settings.arguments;
-    AppRoute route;
+    WidgetBuilder builder;
     switch (settings.name) {
       case HomePage.routeName:
-        route = _navigateToHome(settings);
+        builder = _navigateToHome;
+        break;
+      case NotesPage.routeName:
+        builder = _navigateToNotes;
         break;
     }
 
-    return route;
+    return _wrapRoute(settings, builder);
   }
 
-  static MemeogramRoute _navigateToHome(RouteSettings settings) {
-    return _wrapRoute(
-        settings,
-        Builder(
-          builder: (context) => HomePage(
-            title: AppLocalizations.of(context).helloWorld,
-          ),
-        ));
-  }
-
-  static MemeogramRoute _wrapRoute(RouteSettings settings, Widget widget) {
+  static MemeogramRoute _wrapRoute(
+      RouteSettings settings, WidgetBuilder buildWidget) {
     return MemeogramRoute(
       settings: settings,
-      builder: (context) => widget,
+      builder: buildWidget,
+    );
+  }
+
+  static Widget _navigateToHome(BuildContext context) {
+    return HomePage(
+      title: AppLocalizations.of(context).homoPageTitle,
+    );
+  }
+
+  static Widget _navigateToNotes(BuildContext context) {
+    return NotesPage(
+      title: AppLocalizations.of(context).notesPageTitle,
     );
   }
 }
