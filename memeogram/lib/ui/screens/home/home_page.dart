@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:memeogram/ui/screens/notes.dart';
+import 'package:memeogram/ui/screens/notes/notes_page.dart';
 import 'package:memeogram/viewmodels/home_vm.dart';
 import 'package:provider/provider.dart';
 

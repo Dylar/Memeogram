@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:memeogram/ui/screens/home.dart';
-import 'package:memeogram/ui/screens/notes.dart';
+import 'package:memeogram/ui/screens/home/home_page.dart';
+import 'package:memeogram/ui/screens/notes/notes_page.dart';
 
 abstract class AppRoute<T> extends Route<T> {
   String get appName;

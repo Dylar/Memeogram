@@ -1,31 +1,34 @@
 import 'dart:async';
 
 import 'package:flutter/cupertino.dart';
+import 'package:memeogram/datasource/NotesDataSource.dart';
 import 'package:memeogram/models/note.dart';
 import 'package:provider/provider.dart';
 
 class NotesViewModelProvider extends ChangeNotifierProvider<NotesViewModel> {
-  NotesViewModelProvider() : super(create: (_) => NotesVM());
+  NotesViewModelProvider(NotesDataSource notesDataSource)
+      : super(create: (_) => NotesVM(notesDataSource));
 }
 
 abstract class NotesViewModel extends ChangeNotifier {
-  // Sink get inputMailText;
   Stream<List<Note>> get watchNotes;
 
   void dispose();
+
+  Future<void> newNote();
 }
 
 class NotesVM extends NotesViewModel {
-  final _streamController = StreamController<List<Note>>();
+  NotesVM(this._notesDataSource);
 
-  // @override
-  // Sink get inputMailText => throw UnimplementedError();
-
-  @override
-  Stream<List<Note>> get watchNotes => _streamController.stream;
+  final NotesDataSource _notesDataSource;
 
   @override
-  void dispose() {
-    _streamController.close();
+  Stream<List<Note>> get watchNotes => _notesDataSource.watchNotes();
+
+  @override
+  Future<void> newNote() async {
+    final note = Note(DateTime.now().toString());
+    await _notesDataSource.addNewNote(note);
   }
 }

@@ -4,28 +4,31 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:memeogram/database/database.dart';
 import 'package:memeogram/datasource/NotesDataSource.dart';
 import 'package:memeogram/services/services.dart';
+import 'package:memeogram/ui/screens/error_page.dart';
 import 'package:memeogram/viewmodels/home_vm.dart';
 import 'package:memeogram/viewmodels/notes_vm.dart';
 import 'package:provider/provider.dart';
 
 import 'memeogram_theme.dart';
 import 'navigation/router.dart';
+import 'ui/screens/loading_page.dart';
 
 void main() {
   runApp(App.load());
 }
 
 class AppProviders extends StatelessWidget {
-  const AppProviders(this.child);
+  const AppProviders({@required this.child});
 
   final Widget child;
 
   @override
   Widget build(BuildContext context) {
+    final services = Services.of(context);
     return MultiProvider(
       providers: [
-        NotesViewModelProvider(),
         HomeViewModelProvider(),
+        NotesViewModelProvider(services.notesDataSource),
       ],
       child: child,
     );
@@ -44,38 +47,58 @@ class App extends StatelessWidget {
     MemeogramDatabase database,
     NotesDataSource notesDataSource,
   }) {
+    final db = database ?? MemeogramDatabase();
     return App(
-      database: database ?? MemeogramDatabase(),
-      notesDataSource: notesDataSource ?? NotesDataSource(database),
+      database: db,
+      notesDataSource: notesDataSource ?? NotesDataSource(db),
     );
   }
 
   final MemeogramDatabase database;
   final NotesDataSource notesDataSource;
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return AppProviders(
-      Services.init(
-        notesDataSource: notesDataSource,
-        child: MaterialApp(
-          title: 'Memeogram',
-          theme: memeogramTheme,
-          onGenerateRoute: MemeogramRouter.generateRoute,
-          navigatorObservers: [MemeogramRouter.routeObserver],
-          supportedLocales: const [
-            Locale('en'),
-            Locale('de'),
-          ],
-          localizationsDelegates: const [
-            AppLocalizations.delegate,
-            GlobalMaterialLocalizations.delegate,
-            GlobalWidgetsLocalizations.delegate,
-            GlobalCupertinoLocalizations.delegate,
-          ],
-        ),
-      ),
-    );
+    return FutureBuilder<void>(
+        future: initDB(),
+        builder: (context, snapshot) {
+          if (snapshot.hasError) {
+            return Directionality(
+              textDirection: TextDirection.ltr,
+              child: Center(child: ErrorPage(snapshot.error.toString())),
+            );
+          }
+
+          if (snapshot.connectionState != ConnectionState.done) {
+            return LoadingStartPage();
+          }
+
+          return Services.init(
+            notesDataSource: notesDataSource,
+            child: AppProviders(
+              child: MaterialApp(
+                title: 'Memeogram',
+                theme: memeogramTheme,
+                onGenerateRoute: MemeogramRouter.generateRoute,
+                navigatorObservers: [MemeogramRouter.routeObserver],
+                supportedLocales: const [
+                  Locale('en'),
+                  Locale('de'),
+                ],
+                localizationsDelegates: const [
+                  AppLocalizations.delegate,
+                  GlobalMaterialLocalizations.delegate,
+                  GlobalWidgetsLocalizations.delegate,
+                  GlobalCupertinoLocalizations.delegate,
+                ],
+              ),
+            ),
+          );
+        });
+  }
+
+  Future<void> initDB() async {
+    await Future.delayed(Duration(seconds: 2));
+    return database.isOpen ? Future.value() : database.init();
   }
 }

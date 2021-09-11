@@ -12,9 +12,10 @@ class TestUtils {
     MemeogramDatabase database,
     NotesDataSource notesDataSource,
   }) {
+    final db = database ?? MemeogramDatabase();
     return App.load(
-      database: database ?? FakeDatabase(),
-      notesDataSource: notesDataSource ?? FakeNotesDataSource(),
+      database: db,
+      notesDataSource: notesDataSource ?? NotesDataSource(db),
     );
   }
 }

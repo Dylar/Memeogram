@@ -7,15 +7,14 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:memeogram/ui/screens/home.dart';
+import 'package:memeogram/ui/screens/home/home_page.dart';
+import 'package:memeogram/ui/screens/notes/notes_page.dart';
 
-import '../../../test_utils.dart';
+import '../../../test_navigation.dart';
 
 void main() {
   testWidgets('Counter increments smoke test', (WidgetTester tester) async {
-    // Build our app and trigger a frame.
-    await tester.pumpWidget(TestUtils.loadTestApp());
-    await tester.pumpAndSettle();
+    await initNavigateToHome(tester);
 
     expect(find.byType(CounterPage), findsOneWidget);
 
@@ -33,11 +32,15 @@ void main() {
     expect(find.text('1'), findsOneWidget);
   });
 
-  testWidgets('Render floating button', (WidgetTester tester) async {
-    // Build our app and trigger a frame.
-    await tester.pumpWidget(TestUtils.loadTestApp());
-    await tester.pumpAndSettle();
+  testWidgets('Render floating button - tap -> navigate to NotesPage',
+      (WidgetTester tester) async {
+    await initNavigateToHome(tester);
 
     expect(find.byIcon(Icons.record_voice_over), findsOneWidget);
+    expect(find.byType(NotesPage), findsNothing);
+    await tester.tap(find.byIcon(Icons.record_voice_over));
+    await tester.pump();
+    await tester.pump();
+    expect(find.byType(NotesPage), findsOneWidget);
   });
 }
