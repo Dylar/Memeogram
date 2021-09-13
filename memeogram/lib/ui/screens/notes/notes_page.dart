@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:memeogram/models/note.dart';
+import 'package:memeogram/ui/dialog/dismiss_dialog.dart';
+import 'package:memeogram/ui/snackbars/notes_snackbars.dart';
 import 'package:memeogram/ui/widgets/notes_list_item.dart';
 import 'package:memeogram/ui/widgets/scroll_list_view.dart';
 import 'package:memeogram/viewmodels/notes_vm.dart';
@@ -44,8 +46,50 @@ class NotesPage extends StatelessWidget {
         emptyWidget: Center(
           child: Text("No notes found"),
         ),
-        buildItemWidget: (_, note) => NoteListItem(note),
+        buildItemWidget: (_, note) => NoteDismissible(
+          note: note,
+          child: NoteListItem(note),
+        ),
       ),
     );
   }
+}
+
+class NoteDismissible extends StatelessWidget {
+  const NoteDismissible({
+    @required this.note,
+    @required this.child,
+  });
+
+  final Note note;
+  final Widget child;
+
+  bool isDeleteSwipe(DismissDirection direction) =>
+      direction == DismissDirection.endToStart;
+
+  @override
+  Widget build(BuildContext context) {
+    return Dismissible(
+      key: UniqueKey(),
+      child: child,
+      direction: DismissDirection.endToStart,
+      confirmDismiss: (direction) => confirmDismiss(context, direction),
+      onDismissed: (direction) async {
+        if (isDeleteSwipe(direction)) {
+          await context.read<NotesViewModel>().removeNote(note);
+          showNoteDeletedSnackBar(context, note.title);
+        }
+      },
+    );
+  }
+
+  Future<bool> confirmDismiss(
+    BuildContext context,
+    DismissDirection direction,
+  ) async =>
+      isDeleteSwipe(direction) &&
+      await showDialog<bool>(
+        context: context,
+        builder: (dialogCtx) => DismissDialog(),
+      );
 }

@@ -16,6 +16,8 @@ abstract class NotesViewModel extends ChangeNotifier {
   void dispose();
 
   Future<void> newNote();
+
+  Future<void> removeNote(Note note);
 }
 
 class NotesVM extends NotesViewModel {
@@ -30,5 +32,10 @@ class NotesVM extends NotesViewModel {
   Future<void> newNote() async {
     final note = Note(DateTime.now().toString());
     await _notesDataSource.addNewNote(note);
+  }
+
+  @override
+  Future<void> removeNote(Note note) async {
+    await _notesDataSource.removeNote(note);
   }
 }

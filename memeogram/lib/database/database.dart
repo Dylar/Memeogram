@@ -26,10 +26,15 @@ class MemeogramDatabase {
     isOpen = true;
   }
 
+  Future<List<Note>> getNotes() async => _dbNotes;
+
   Future<void> upsertNote(Note note) async {
     _isDatabaseOpen();
     _dbNotes.add(note);
   }
 
-  Future<List<Note>> getNotes() async => _dbNotes;
+  void deleteNote(Note note) {
+    _isDatabaseOpen();
+    _dbNotes.remove(note);
+  }
 }

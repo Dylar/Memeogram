@@ -23,4 +23,9 @@ class NotesDataSource {
     database.upsertNote(note);
     streamController.sink.add(await database.getNotes());
   }
+
+  Future<void> removeNote(Note note) async {
+    database.deleteNote(note);
+    streamController.sink.add(await database.getNotes());
+  }
 }
