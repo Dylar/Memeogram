@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:memeogram/ui/screens/notes/notes_page.dart';
-import 'package:memeogram/viewmodels/home_vm.dart';
-import 'package:provider/provider.dart';
+import 'package:memeogram/ui/widgets/video_player.dart';
 
 class HomePage extends StatelessWidget {
   HomePage({Key key, this.title}) : super(key: key);
@@ -39,16 +38,9 @@ class CounterPage extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
           Text(
-            'You have pushed the button this many times:',
+            'Look a video',
           ),
-          Text(
-            '${context.watch<HomeViewModel>().count}',
-            style: Theme.of(context).textTheme.headline4,
-          ),
-          ElevatedButton(
-            onPressed: context.read<HomeViewModel>().incrementCounter,
-            child: Text('Increment'),
-          )
+          VideoWidget(),
         ],
       ),
     );

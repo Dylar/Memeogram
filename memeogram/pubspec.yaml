@@ -35,9 +35,11 @@ dependencies:
 
   # app dependency
   provider: ^6.0.0
+  video_player: ^2.2.10
 
   # test dependency
   mockito: ^5.0.15
+
 
 dev_dependencies:
   flutter_test:
